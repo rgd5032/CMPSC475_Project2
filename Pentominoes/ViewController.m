@@ -53,6 +53,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self placePlayingPieces];
+}
+
 -(void)placePlayingPieces
 {   
     // Leave a padding at the beginning and end
@@ -78,6 +83,50 @@
         imageView.frame = CGRectMake(currentOrigin.x, currentOrigin.y, imageView.frame.size.width, imageView.frame.size.height);
         rowSpaceRemaining -= imageView.frame.size.width + kPaddingBetweenPlayingPieces;
         currentOrigin.x = self.view.bounds.size.width - rowSpaceRemaining;
+        
+        
+        
+        
+        imageView.userInteractionEnabled = YES;
+        
+        UITapGestureRecognizer *doubleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pieceDoubleTapped:)];
+        doubleTapGesture.numberOfTapsRequired = 2;
+        [imageView addGestureRecognizer:doubleTapGesture];
+        
+        UITapGestureRecognizer *singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pieceSingleTapped:)];
+        singleTapGesture.numberOfTapsRequired = 1;
+        [singleTapGesture requireGestureRecognizerToFail:doubleTapGesture];
+        [imageView addGestureRecognizer:singleTapGesture];
+        
+        
+        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(piecePanRecognized:)];
+        [imageView addGestureRecognizer:panGesture];
+    }
+}
+
+-(void)pieceSingleTapped:(UITapGestureRecognizer*)recognizer {
+    UIView *singleTappedPiece = recognizer.view;
+    singleTappedPiece.transform = CGAffineTransformRotate(singleTappedPiece.transform, M_PI_2);
+}
+
+-(void)pieceDoubleTapped:(UITapGestureRecognizer*)recognizer {
+    UIView *doubleTappedPiece = recognizer.view;
+    doubleTappedPiece.transform = CGAffineTransformScale(doubleTappedPiece.transform, -1.0, 1.0);
+}
+
+-(void)piecePanRecognized:(UIPanGestureRecognizer*)recognizer {
+    UIView *pannedPiece = recognizer.view;
+    
+    switch (recognizer.state) {
+        case UIGestureRecognizerStateChanged:
+            //TODO: add to board view??
+            pannedPiece.center = [recognizer locationInView:self.view];
+            break;
+        case UIGestureRecognizerStateEnded:
+            //TODO: Snap into place
+            break;
+        default:
+            break;
     }
 }
 

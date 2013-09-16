@@ -54,5 +54,4 @@
     NSArray *solutions = [NSArray arrayWithContentsOfFile:path];
     return solutions;
 }
-
 @end
