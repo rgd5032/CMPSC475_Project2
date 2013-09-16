@@ -13,6 +13,7 @@
 #define kPlayingPieceRowHeight 140
 #define kPaddingBetweenPiecesAndBoard 40
 #define kBoardBlockDimension 30
+#define kAnimationDuration 1.0
 
 @interface ViewController ()
 - (IBAction)boardButtonClicked:(id)sender;
@@ -95,21 +96,30 @@
             currentOrigin.x = kEdgePaddingForPlayingPieces;
         }
         
+        CGPoint convertedOrigin = [imageView.superview convertPoint:imageView.frame.origin toView:self.view];
+        imageView.frame = CGRectMake(convertedOrigin.x, convertedOrigin.y, imageView.frame.size.width, imageView.frame.size.height);
+        [self.view addSubview:imageView];
         imageView.frame = CGRectMake(currentOrigin.x, currentOrigin.y, imageView.frame.size.width, imageView.frame.size.height);
         rowSpaceRemaining -= imageView.frame.size.width + kPaddingBetweenPlayingPieces;
         currentOrigin.x = self.view.bounds.size.width - rowSpaceRemaining;
-        [imageView convertPoint:imageView.frame.origin toView:self.view];
-        [self.view addSubview:imageView];
     }
 }
 
 -(void) resetPlayingPieces
 {
     if (self.puzzleSolved){
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:1.0];
-        [self placePlayingPieces];
-        [UIView commitAnimations];
+        void (^animate)() = ^{
+            [self placePlayingPieces];
+        };
+        
+        void (^completion)(BOOL) = ^(BOOL finished){};
+        
+        [UIView animateWithDuration:kAnimationDuration
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseInOut
+                         animations:animate
+                         completion:completion];
+
         self.puzzleSolved = NO;
     }
 }
@@ -131,10 +141,7 @@
     
     NSDictionary *currentSolution = self.solutions[self.currentBoardNumber - 1];
     
-    for (id key in self.playingPieces){
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:1.0];
-        
+    for (id key in self.playingPieces){        
         NSDictionary *currentPieceSolution = [currentSolution objectForKey:key];
         NSNumber *originX = [currentPieceSolution objectForKey:@"x"];
         NSNumber *originY = [currentPieceSolution objectForKey:@"y"];
@@ -142,15 +149,26 @@
         NSNumber *flips = [currentPieceSolution objectForKey:@"flips"];
         
         UIImageView *imageView = [self.playingPieces objectForKey:key];
-        imageView.transform = CGAffineTransformMakeRotation(M_PI_2*[rotations floatValue]);
-        if([flips integerValue]){
-            imageView.transform = CGAffineTransformScale(imageView.transform, -1.0, 1.0);
-        }
-        imageView.frame = CGRectMake(kBoardBlockDimension*[originX floatValue], kBoardBlockDimension*[originY floatValue], imageView.frame.size.width, imageView.frame.size.height);
-        [imageView convertPoint:imageView.frame.origin toView:self.boardView];
-        [self.boardView addSubview:imageView];
         
-        [UIView commitAnimations];
+        void (^animate)() = ^{
+            CGPoint convertedOrigin = [imageView.superview convertPoint:imageView.frame.origin toView:self.boardView];
+            imageView.frame = CGRectMake(convertedOrigin.x, convertedOrigin.y, imageView.frame.size.width, imageView.frame.size.height);
+            [self.boardView addSubview:imageView];
+            imageView.transform = CGAffineTransformMakeRotation(M_PI_2*[rotations floatValue]);
+            if([flips integerValue]){
+                imageView.transform = CGAffineTransformScale(imageView.transform, -1.0, 1.0);
+            }
+            imageView.frame = CGRectMake(kBoardBlockDimension*[originX floatValue], kBoardBlockDimension*[originY floatValue], imageView.frame.size.width, imageView.frame.size.height);
+            
+        };
+        
+        void (^completion)(BOOL) = ^(BOOL finished){};
+        
+        [UIView animateWithDuration:kAnimationDuration
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseInOut
+                         animations:animate
+                         completion:completion];
     }
     
     self.puzzleSolved = YES;
