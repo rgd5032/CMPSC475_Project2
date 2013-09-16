@@ -47,6 +47,7 @@
 		4C6B4A3A17DD7E5500C3E3DA /* tileX.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6B4A2117DD7E5500C3E3DA /* tileX.png */; };
 		4C6B4A3B17DD7E5500C3E3DA /* tileY.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6B4A2217DD7E5500C3E3DA /* tileY.png */; };
 		4C6B4A3C17DD7E5500C3E3DA /* tileZ.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6B4A2317DD7E5500C3E3DA /* tileZ.png */; };
+		4C96F04517E6CF17001293B0 /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C96F04417E6CF17001293B0 /* Model.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,6 +96,8 @@
 		4C6B4A2117DD7E5500C3E3DA /* tileX.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tileX.png; sourceTree = "<group>"; };
 		4C6B4A2217DD7E5500C3E3DA /* tileY.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tileY.png; sourceTree = "<group>"; };
 		4C6B4A2317DD7E5500C3E3DA /* tileZ.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tileZ.png; sourceTree = "<group>"; };
+		4C96F04317E6CF17001293B0 /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
+		4C96F04417E6CF17001293B0 /* Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Model.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +154,8 @@
 				4C6B49FF17DD7E2B00C3E3DA /* MainStoryboard.storyboard */,
 				4C6B4A0217DD7E2B00C3E3DA /* ViewController.h */,
 				4C6B4A0317DD7E2B00C3E3DA /* ViewController.m */,
+				4C96F04317E6CF17001293B0 /* Model.h */,
+				4C96F04417E6CF17001293B0 /* Model.m */,
 				4C6B49EE17DD7E2A00C3E3DA /* Supporting Files */,
 			);
 			path = Pentominoes;
@@ -300,6 +305,7 @@
 				4C6B49F417DD7E2B00C3E3DA /* main.m in Sources */,
 				4C6B49F817DD7E2B00C3E3DA /* AppDelegate.m in Sources */,
 				4C6B4A0417DD7E2B00C3E3DA /* ViewController.m in Sources */,
+				4C96F04517E6CF17001293B0 /* Model.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
