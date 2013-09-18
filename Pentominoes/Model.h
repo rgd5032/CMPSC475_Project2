@@ -9,9 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @interface Model : NSObject
-@property (strong, nonatomic, readonly) NSArray *boardImages;
-@property (strong, nonatomic, readonly) NSMutableDictionary *playingPieces;
-@property (strong, nonatomic, readonly) NSArray *solutions;
--(NSMutableDictionary*)createPlayingPieces;
+-(NSDictionary*)createPlayingPieceImages;
 -(NSArray*)createBoardImages;
+-(UIImage*)getBoardImage:(NSInteger)boardNumber;
+-(NSDictionary*)getSolution:(NSInteger)boardNumber;
 @end

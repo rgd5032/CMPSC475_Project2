@@ -8,34 +8,39 @@
 
 #import "Model.h"
 
+@interface Model ()
+@property (strong, nonatomic) NSArray *boardImages;
+@property (strong, nonatomic) NSArray *solutions;
+@end
+
 @implementation Model
 
--(id)init {
+-(id)init
+{
     self = [super init];
     if (self) {
-        _boardImages = [self createBoardImages];
-        _playingPieces = [self createPlayingPieces];
         _solutions = [self createSolutions];
+        _boardImages = [self createBoardImages];
     }
     return self;
 }
 
--(NSMutableDictionary*)createPlayingPieces {
+-(NSDictionary*)createPlayingPieceImages
+{
     NSMutableDictionary *pieces = [[NSMutableDictionary alloc] init];
     NSArray *playingPieceNames = @[@"F", @"I", @"L", @"N", @"P", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
     
     for (NSString *name in playingPieceNames)
     {
         UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"tile%@", name]];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-        imageView.frame = CGRectMake(0.0, 0.0, image.size.width/2, image.size.height/2);
-        [pieces setObject:imageView forKey:name];
+        [pieces setObject:image forKey:name];
     }
     
     return pieces;
 }
 
--(NSArray*)createBoardImages {
+-(NSArray*)createBoardImages
+{
     NSArray *boardImages = [[NSArray alloc] initWithObjects:
                             [UIImage imageNamed:@"Board0.png"],
                             [UIImage imageNamed:@"Board1.png"],
@@ -53,5 +58,16 @@
     NSString *path = [mainBundle pathForResource:@"Solutions" ofType:@"plist"];
     NSArray *solutions = [NSArray arrayWithContentsOfFile:path];
     return solutions;
+}
+
+-(NSDictionary*)getSolution:(NSInteger)boardNumber
+{
+    NSDictionary *solution = [[NSDictionary alloc] initWithDictionary:self.solutions[boardNumber-1]];
+    return solution;
+}
+
+-(UIImage*)getBoardImage:(NSInteger)boardNumber
+{
+    return self.boardImages[boardNumber];
 }
 @end
