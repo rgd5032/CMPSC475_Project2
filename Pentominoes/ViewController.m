@@ -7,21 +7,23 @@
 //
 
 #import "ViewController.h"
+#import "InfoViewController.h"
 #import "Model.h"
 
 #define kEdgePaddingForPlayingPieces 80
-#define kPaddingBetweenPlayingPieces 30
+#define kPaddingBetweenPlayingPieces 30.0
 #define kPlayingPieceRowHeight 140
-#define kPaddingBetweenPiecesAndBoard 40
+#define kPaddingBetweenPiecesAndBoard 65
 #define kBoardBlockDimension 30
-#define kAnimationDuration 1.0
+#define kStandardAnimationDuration 1.0
+#define kPiecePanMagnification 1.5
+#define kPanAnimationDuration 0.2
 
 @interface ViewController ()
 - (IBAction)boardButtonClicked:(id)sender;
 - (IBAction)solveButtonClicked:(id)sender;
 - (IBAction)resetButtonClicked:(id)sender;
 @property (weak, nonatomic) IBOutlet UIImageView *boardView;
-@property NSInteger currentBoardNumber;
 @property BOOL puzzleSolved;
 @property NSMutableDictionary *playingPieces;
 
@@ -44,16 +46,15 @@
         UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
         imageView.frame = CGRectMake(0.0, 0.0, image.size.width/2, image.size.height/2);
         imageView.userInteractionEnabled = YES;
+        [self addPlayingPieceGestures:imageView];
         [self.playingPieces setObject:imageView forKey:key];
     }
-    
-    self.puzzleSolved = NO;
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    self.currentBoardNumber = 0;
-    UIImage *image = [self.model getBoardImage:self.currentBoardNumber];
+    self.model.currentBoardNumber = 0;
+    UIImage *image = [self.model getBoardImage:self.model.currentBoardNumber];
     [self.boardView setImage: image];
     [self placePlayingPieces];
 }
@@ -66,6 +67,7 @@
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     [self resetPlayingPieces];
 }
 
@@ -94,8 +96,6 @@
         imageView.frame = CGRectMake(currentOrigin.x, currentOrigin.y, imageView.frame.size.width, imageView.frame.size.height);
         rowSpaceRemaining -= imageView.frame.size.width + kPaddingBetweenPlayingPieces;
         currentOrigin.x = self.view.bounds.size.width - rowSpaceRemaining;
-        
-        [self addPlayingPieceGestures:imageView];
     }
 }
 
@@ -114,143 +114,35 @@
     [imageView addGestureRecognizer:panGesture];
 }
 
--(void)pieceSingleTapped:(UITapGestureRecognizer*)recognizer
-{
-    UIView *singleTappedPiece = recognizer.view;
-    
-    void (^animate)() = ^{
-        singleTappedPiece.transform = CGAffineTransformRotate(singleTappedPiece.transform, M_PI_2);
-    };
-    
-    void (^completion)(BOOL) = ^(BOOL finished){};
-    
-    [UIView animateWithDuration:kAnimationDuration
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseInOut
-                     animations:animate
-                     completion:completion];
-}
-
--(void)pieceDoubleTapped:(UITapGestureRecognizer*)recognizer
-{
-    UIView *doubleTappedPiece = recognizer.view;
-    
-    void (^animate)() = ^{
-        doubleTappedPiece.transform = CGAffineTransformScale(doubleTappedPiece.transform, -1.0, 1.0);
-    };
-    
-    void (^completion)(BOOL) = ^(BOOL finished){};
-    
-    [UIView animateWithDuration:kAnimationDuration
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseInOut
-                     animations:animate
-                     completion:completion];
-}
-
--(void)piecePanRecognized:(UIPanGestureRecognizer*)recognizer
-{
-    UIView *pannedPiece = recognizer.view;
-    
-    switch (recognizer.state) {
-        case UIGestureRecognizerStateBegan:
-        {
-            pannedPiece.transform = CGAffineTransformScale(pannedPiece.transform, 1.5, 1.5);
-        }
-        case UIGestureRecognizerStateChanged:
-        {
-            void (^animate)() = ^{
-                
-                pannedPiece.center = [recognizer locationInView:self.view];
-            };
-            
-            void (^completion)(BOOL) = ^(BOOL finished){};
-            
-            [UIView animateWithDuration:0.2
-                                  delay:0.0
-                                options:UIViewAnimationOptionCurveEaseInOut
-                             animations:animate
-                             completion:completion];
-
-            break;
-        }
-        case UIGestureRecognizerStateEnded:
-        {
-            // Place the piece's imageView in the correct superview
-            UIView *newSuperView;
-            CGPoint newOrigin;
-            
-            pannedPiece.transform = CGAffineTransformScale(pannedPiece.transform, 2/3.0, 2/3.0);
-            
-            if(CGRectContainsPoint(self.boardView.frame, pannedPiece.frame.origin)){
-                newSuperView = self.boardView;
-                newOrigin = [pannedPiece.superview convertPoint:pannedPiece.frame.origin toView:self.boardView];
-                pannedPiece.frame = CGRectMake(newOrigin.x, newOrigin.y, pannedPiece.frame.size.width, pannedPiece.frame.size.height);
-                CGFloat snapOriginX = 30.0*floorf((newOrigin.x/30.0)+0.5);
-                CGFloat snapOriginY = 30.0*floorf((newOrigin.y/30.0)+0.5);
-                newOrigin = CGPointMake(snapOriginX, snapOriginY);
-            }
-            else{
-                newSuperView = self.view;
-                newOrigin = pannedPiece.frame.origin;
-            }
-            
-            if (newSuperView != pannedPiece.superview){
-                [newSuperView addSubview:pannedPiece];
-                
-                void (^animate)() = ^{
-                    pannedPiece.frame = CGRectMake(newOrigin.x, newOrigin.y, pannedPiece.frame.size.width, pannedPiece.frame.size.height);
-                };
-                
-                void (^completion)(BOOL) = ^(BOOL finished){};
-                
-                [UIView animateWithDuration:0.5
-                                      delay:0.0
-                                    options:UIViewAnimationOptionCurveEaseInOut
-                                 animations:animate
-                                 completion:completion];
-            }
-            break;
-        }
-        default:
-            break;
-    }
-}
-
 -(void) resetPlayingPieces
 {
     void (^animate)() = ^{
             [self placePlayingPieces];
     };
         
-    void (^completion)(BOOL) = ^(BOOL finished){};
-        
-    [UIView animateWithDuration:kAnimationDuration
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseInOut
-                     animations:animate
-                    completion:completion];
-
+    [UIView animateWithDuration:kStandardAnimationDuration animations:animate];
+    
     self.puzzleSolved = NO;
+    self.boardView.userInteractionEnabled = YES;
 }
+
+#pragma mark - IBActions
 
 - (IBAction)boardButtonClicked:(id)sender {
     UIButton *boardButton = sender;
-    self.currentBoardNumber = boardButton.tag;
+    self.model.currentBoardNumber = boardButton.tag;
     UIImage *image = [self.model getBoardImage:boardButton.tag];
     [self.boardView setImage: image];
     
-    if(self.puzzleSolved){
-        [self resetPlayingPieces];
-        self.puzzleSolved = NO;
-    }
+    [self resetPlayingPieces];
+    self.puzzleSolved = NO;
 }
 
 - (IBAction)solveButtonClicked:(id)sender {
-    if (self.currentBoardNumber == 0 || self.puzzleSolved)
+    if (self.model.currentBoardNumber == 0 || self.puzzleSolved)
         return;
     
-    NSDictionary *currentSolution = [self.model getSolution:self.currentBoardNumber];
+    NSDictionary *currentSolution = [self.model getSolution:self.model.currentBoardNumber];
     
     for (id key in self.playingPieces){
         NSDictionary *currentPieceSolution = [currentSolution objectForKey:key];
@@ -274,19 +166,115 @@
             
         };
         
-        void (^completion)(BOOL) = ^(BOOL finished){};
-        
-        [UIView animateWithDuration:kAnimationDuration
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseInOut
-                         animations:animate
-                         completion:completion];
+        [UIView animateWithDuration:kStandardAnimationDuration animations:animate];
     }
     
     self.puzzleSolved = YES;
+    self.boardView.userInteractionEnabled = NO;
 }
 
 - (IBAction)resetButtonClicked:(id)sender {
     [self resetPlayingPieces];
 }
+
+#pragma mark - Info Delegate
+-(void)dismissMe {
+    [self dismissViewControllerAnimated:YES completion:NULL];
+}
+
+#pragma mark - Segues
+/*
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"InfoSegue"]) {
+        InfoViewController *infoViewController = segue.destinationViewController;
+        infoViewController.delegate = self;
+    }
+    
+}
+*/
+-(IBAction)unwindSegue:(UIStoryboardSegue*)segue {
+    
+}
+
+#pragma mark - GestureRecognizers
+-(void)pieceSingleTapped:(UITapGestureRecognizer*)recognizer
+{
+    UIView *singleTappedPiece = recognizer.view;
+    
+    void (^animate)() = ^{
+        singleTappedPiece.transform = CGAffineTransformRotate(singleTappedPiece.transform, M_PI_2);
+    };
+    
+    [UIView animateWithDuration:kStandardAnimationDuration animations:animate];
+}
+
+-(void)pieceDoubleTapped:(UITapGestureRecognizer*)recognizer
+{
+    UIView *doubleTappedPiece = recognizer.view;
+    
+    void (^animate)() = ^{
+        doubleTappedPiece.transform = CGAffineTransformScale(doubleTappedPiece.transform, -1.0, 1.0);
+    };
+    
+    [UIView animateWithDuration:kStandardAnimationDuration animations:animate];
+}
+
+-(void)piecePanRecognized:(UIPanGestureRecognizer*)recognizer
+{
+    UIView *pannedPiece = recognizer.view;
+    
+    switch (recognizer.state) {
+        case UIGestureRecognizerStateBegan:
+        {
+            pannedPiece.transform = CGAffineTransformScale(pannedPiece.transform, kPiecePanMagnification, kPiecePanMagnification);
+            break;
+        }
+            
+        case UIGestureRecognizerStateChanged:
+        {
+            pannedPiece.center = [recognizer locationInView:pannedPiece.superview];
+            break;
+        }
+            
+        case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateCancelled:
+        {            
+            // Place the piece's imageView in the correct superview
+            UIView *newSuperView;
+            CGPoint newOrigin;
+            
+            pannedPiece.transform = CGAffineTransformScale(pannedPiece.transform, 1/kPiecePanMagnification, 1/kPiecePanMagnification);
+            
+            CGPoint endingOriginInView = [pannedPiece.superview convertPoint:pannedPiece.frame.origin toView:self.view];
+            pannedPiece.frame = CGRectMake(endingOriginInView.x, endingOriginInView.y, pannedPiece.frame.size.width, pannedPiece.frame.size.height);
+            [self.view addSubview:pannedPiece];
+            
+            CGPoint pieceBottomRight = CGPointMake(pannedPiece.frame.origin.x + pannedPiece.frame.size.width, pannedPiece.frame.origin.y + pannedPiece.frame.size.height);
+            
+            if(CGRectContainsPoint(self.boardView.frame, pannedPiece.frame.origin) && CGRectContainsPoint(self.boardView.frame, pieceBottomRight)){
+                newSuperView = self.boardView;
+                newOrigin = [pannedPiece.superview convertPoint:pannedPiece.frame.origin toView:newSuperView];
+                pannedPiece.frame = CGRectMake(newOrigin.x, newOrigin.y, pannedPiece.frame.size.width, pannedPiece.frame.size.height);
+                CGFloat snapOriginX = kBoardBlockDimension*floorf((newOrigin.x/kBoardBlockDimension)+0.5);
+                CGFloat snapOriginY = kBoardBlockDimension*floorf((newOrigin.y/kBoardBlockDimension)+0.5);
+                newOrigin = CGPointMake(snapOriginX, snapOriginY);
+            }
+            else{
+                newSuperView = self.view;
+                newOrigin = [pannedPiece.superview convertPoint:pannedPiece.frame.origin toView:newSuperView];
+            }
+            
+            if (newSuperView != pannedPiece.superview){
+             [newSuperView addSubview:pannedPiece];
+             pannedPiece.frame = CGRectMake(newOrigin.x, newOrigin.y, pannedPiece.frame.size.width, pannedPiece.frame.size.height);
+            }
+            break;
+             
+             
+        }
+        default:
+            break;
+    }
+}
+
 @end

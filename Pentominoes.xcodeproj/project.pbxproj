@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C00952817E963FA001A449E /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00952717E963FA001A449E /* InfoViewController.m */; };
 		4C0BB0A217E2725F00CFAD20 /* PentominoesLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C0BB0A117E2725F00CFAD20 /* PentominoesLogo@2x.png */; };
 		4C0BB0A417E2729200CFAD20 /* PentominoesLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C0BB0A317E2729200CFAD20 /* PentominoesLogo.png */; };
 		4C0BB0A617E2755D00CFAD20 /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C0BB0A517E2755D00CFAD20 /* Default-Portrait@2x~ipad.png */; };
@@ -51,6 +52,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4C00952617E963FA001A449E /* InfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoViewController.h; sourceTree = "<group>"; };
+		4C00952717E963FA001A449E /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
 		4C0BB0A117E2725F00CFAD20 /* PentominoesLogo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PentominoesLogo@2x.png"; sourceTree = "<group>"; };
 		4C0BB0A317E2729200CFAD20 /* PentominoesLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PentominoesLogo.png; sourceTree = "<group>"; };
 		4C0BB0A517E2755D00CFAD20 /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
@@ -156,6 +159,8 @@
 				4C6B4A0317DD7E2B00C3E3DA /* ViewController.m */,
 				4C96F04317E6CF17001293B0 /* Model.h */,
 				4C96F04417E6CF17001293B0 /* Model.m */,
+				4C00952617E963FA001A449E /* InfoViewController.h */,
+				4C00952717E963FA001A449E /* InfoViewController.m */,
 				4C6B49EE17DD7E2A00C3E3DA /* Supporting Files */,
 			);
 			path = Pentominoes;
@@ -306,6 +311,7 @@
 				4C6B49F817DD7E2B00C3E3DA /* AppDelegate.m in Sources */,
 				4C6B4A0417DD7E2B00C3E3DA /* ViewController.m in Sources */,
 				4C96F04517E6CF17001293B0 /* Model.m in Sources */,
+				4C00952817E963FA001A449E /* InfoViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

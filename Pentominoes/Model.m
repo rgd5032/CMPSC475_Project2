@@ -21,6 +21,7 @@
     if (self) {
         _solutions = [self createSolutions];
         _boardImages = [self createBoardImages];
+        _currentBoardNumber = 0;
     }
     return self;
 }

@@ -12,7 +12,7 @@
                         <rect key="frame" x="0.0" y="20" width="768" height="1004"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="Board0.png" translatesAutoresizingMaskIntoConstraints="NO" id="tFn-p5-fzn">
+                            <imageView contentMode="scaleAspectFit" image="Board0.png" translatesAutoresizingMaskIntoConstraints="NO" id="tFn-p5-fzn">
                                 <constraints>
                                     <constraint firstAttribute="height" constant="420" id="czg-0Q-pGu"/>
                                     <constraint firstAttribute="width" constant="420" id="zyE-Na-Q7P"/>
@@ -131,6 +131,19 @@
                                     <action selector="resetButtonClicked:" destination="2" eventType="touchUpInside" id="n4a-ke-hLp"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fwk-5R-ZlR">
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="cCc-mr-LAE" kind="modal" modalTransitionStyle="partialCurl" id="6hZ-qc-bIR"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.50196081399917603" blue="0.25098040699958801" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -138,9 +151,11 @@
                             <constraint firstItem="UsF-XF-Lrp" firstAttribute="top" secondItem="6Qn-Xk-tYH" secondAttribute="top" type="default" id="6xx-ER-3In"/>
                             <constraint firstItem="xVM-uW-lG2" firstAttribute="leading" secondItem="QuW-mo-7gu" secondAttribute="leading" type="default" id="GMe-zw-iwf"/>
                             <constraint firstItem="nGc-vj-boJ" firstAttribute="leading" secondItem="Z6j-kz-uZZ" secondAttribute="leading" type="default" id="JcZ-RK-g80"/>
+                            <constraint firstAttribute="bottom" secondItem="Fwk-5R-ZlR" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="JzM-bB-xqT"/>
                             <constraint firstItem="enk-tE-F6d" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="35" type="user" id="KaU-Wl-iEp"/>
                             <constraint firstItem="QuW-mo-7gu" firstAttribute="leading" secondItem="vKc-hJ-POW" secondAttribute="leading" type="default" id="Msq-Ef-Dbp"/>
                             <constraint firstItem="Z6j-kz-uZZ" firstAttribute="top" secondItem="QuW-mo-7gu" secondAttribute="top" type="default" id="NYu-gf-uXj"/>
+                            <constraint firstItem="Fwk-5R-ZlR" firstAttribute="trailing" secondItem="UsF-XF-Lrp" secondAttribute="trailing" type="default" id="S2V-Kh-app"/>
                             <constraint firstItem="6Qn-Xk-tYH" firstAttribute="bottom" secondItem="tFn-p5-fzn" secondAttribute="bottom" type="default" id="SWK-a5-PUX"/>
                             <constraint firstItem="tFn-p5-fzn" firstAttribute="top" secondItem="xVM-uW-lG2" secondAttribute="top" type="default" id="T7T-aC-VjO"/>
                             <constraint firstItem="tFn-p5-fzn" firstAttribute="centerX" secondItem="3" secondAttribute="centerX" type="default" id="Vip-he-Lur"/>
@@ -164,7 +179,56 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-80" y="65"/>
+            <point key="canvasLocation" x="-502" y="65"/>
+        </scene>
+        <!--Info View Controller-->
+        <scene sceneID="mns-11-0uG">
+            <objects>
+                <viewController id="cCc-mr-LAE" customClass="InfoViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Iy7-zY-DrT">
+                        <rect key="frame" x="0.0" y="20" width="768" height="1004"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kDf-0X-Lxn">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="2li-CP-Zef"/>
+                                    <constraint firstAttribute="width" constant="98" id="pWd-Cg-50f"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Baskerville-SemiBold" family="Baskerville" pointSize="21"/>
+                                <state key="normal" title="Dismiss">
+                                    <color key="titleColor" red="0.096520182934207457" green="0.52156865600000002" blue="0.16394835046404685" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="dismissPressed:" destination="cCc-mr-LAE" eventType="touchUpInside" id="xBu-Ew-JZV"/>
+                                    <segue destination="Wcc-uI-GYB" kind="unwind" unwindAction="unwindSegue:" id="kZP-D3-QI5"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Pentominoes                               CMPSC 475                       Developed by: Bobby Dick" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="346" translatesAutoresizingMaskIntoConstraints="NO" id="bqK-dH-LgR">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="173" id="HQY-AO-BwY"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Baskerville-SemiBold" family="Baskerville" pointSize="28"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="0.92667940095710122" blue="0.67844996941955238" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="bqK-dH-LgR" firstAttribute="centerX" secondItem="Iy7-zY-DrT" secondAttribute="centerX" type="default" id="3ra-GW-JlE"/>
+                            <constraint firstItem="bqK-dH-LgR" firstAttribute="centerX" secondItem="kDf-0X-Lxn" secondAttribute="centerX" type="default" id="GeO-JF-m0l"/>
+                            <constraint firstAttribute="bottom" secondItem="kDf-0X-Lxn" secondAttribute="bottom" constant="72" id="kAR-3m-ndi"/>
+                            <constraint firstItem="bqK-dH-LgR" firstAttribute="top" secondItem="Iy7-zY-DrT" secondAttribute="top" constant="415" id="rh3-WM-8oS"/>
+                        </constraints>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8WL-8U-b7X" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Wcc-uI-GYB" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="571" y="65"/>
         </scene>
     </scenes>
     <resources>
@@ -177,8 +241,17 @@
         <image name="Board5button.png" width="105" height="105"/>
     </resources>
     <classes>
+        <class className="InfoViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/InfoViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="dismissPressed:"/>
+            </relationships>
+        </class>
         <class className="NSLayoutConstraint" superclassName="NSObject">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+        <class className="UIStoryboardSegue" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UIStoryboardSegue.h"/>
         </class>
         <class className="ViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ViewController.h"/>
@@ -186,6 +259,7 @@
                 <relationship kind="action" name="boardButtonClicked:"/>
                 <relationship kind="action" name="resetButtonClicked:"/>
                 <relationship kind="action" name="solveButtonClicked:"/>
+                <relationship kind="action" name="unwindSegue:" candidateClass="UIStoryboardSegue"/>
                 <relationship kind="outlet" name="boardView" candidateClass="UIImageView"/>
             </relationships>
         </class>

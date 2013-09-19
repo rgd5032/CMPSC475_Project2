@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface Model : NSObject
+@property NSInteger currentBoardNumber;
 -(NSDictionary*)createPlayingPieceImages;
 -(NSArray*)createBoardImages;
 -(UIImage*)getBoardImage:(NSInteger)boardNumber;
