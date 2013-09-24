@@ -12,6 +12,7 @@
 		4C0BB0A417E2729200CFAD20 /* PentominoesLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C0BB0A317E2729200CFAD20 /* PentominoesLogo.png */; };
 		4C0BB0A617E2755D00CFAD20 /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C0BB0A517E2755D00CFAD20 /* Default-Portrait@2x~ipad.png */; };
 		4C0BB0A817E2756600CFAD20 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C0BB0A717E2756600CFAD20 /* Default-Portrait~ipad.png */; };
+		4C0E076B17F21D080061DDDD /* PlayingPieceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C0E076A17F21D080061DDDD /* PlayingPieceView.m */; };
 		4C6B49E817DD7E2A00C3E3DA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C6B49E717DD7E2A00C3E3DA /* UIKit.framework */; };
 		4C6B49EA17DD7E2A00C3E3DA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C6B49E917DD7E2A00C3E3DA /* Foundation.framework */; };
 		4C6B49EC17DD7E2A00C3E3DA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C6B49EB17DD7E2A00C3E3DA /* CoreGraphics.framework */; };
@@ -58,6 +59,8 @@
 		4C0BB0A317E2729200CFAD20 /* PentominoesLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PentominoesLogo.png; sourceTree = "<group>"; };
 		4C0BB0A517E2755D00CFAD20 /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
 		4C0BB0A717E2756600CFAD20 /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
+		4C0E076917F21D080061DDDD /* PlayingPieceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayingPieceView.h; path = "Pentominoes Assets/PlayingPieceView.h"; sourceTree = "<group>"; };
+		4C0E076A17F21D080061DDDD /* PlayingPieceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlayingPieceView.m; path = "Pentominoes Assets/PlayingPieceView.m"; sourceTree = "<group>"; };
 		4C6B49E417DD7E2A00C3E3DA /* Pentominoes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pentominoes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C6B49E717DD7E2A00C3E3DA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4C6B49E917DD7E2A00C3E3DA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -159,6 +162,8 @@
 				4C6B4A0317DD7E2B00C3E3DA /* ViewController.m */,
 				4C96F04317E6CF17001293B0 /* Model.h */,
 				4C96F04417E6CF17001293B0 /* Model.m */,
+				4C0E076917F21D080061DDDD /* PlayingPieceView.h */,
+				4C0E076A17F21D080061DDDD /* PlayingPieceView.m */,
 				4C00952617E963FA001A449E /* InfoViewController.h */,
 				4C00952717E963FA001A449E /* InfoViewController.m */,
 				4C6B49EE17DD7E2A00C3E3DA /* Supporting Files */,
@@ -312,6 +317,7 @@
 				4C6B4A0417DD7E2B00C3E3DA /* ViewController.m in Sources */,
 				4C96F04517E6CF17001293B0 /* Model.m in Sources */,
 				4C00952817E963FA001A449E /* InfoViewController.m in Sources */,
+				4C0E076B17F21D080061DDDD /* PlayingPieceView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

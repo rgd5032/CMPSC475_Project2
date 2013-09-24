@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "InfoViewController.h"
 #import "Model.h"
+#import "PlayingPieceView.h"
 
 #define kEdgePaddingForPlayingPieces 80
 #define kPaddingBetweenPlayingPieces 30.0
@@ -43,7 +44,7 @@
     NSDictionary *pieces = [self.model createPlayingPieceImages];
     for (id key in pieces){
         UIImage *image = [pieces objectForKey:key];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        PlayingPieceView *imageView = [[PlayingPieceView alloc] initWithImage:image];
         imageView.frame = CGRectMake(0.0, 0.0, image.size.width/2, image.size.height/2);
         imageView.userInteractionEnabled = YES;
         [self addPlayingPieceGestures:imageView];
@@ -68,7 +69,7 @@
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-    [self resetPlayingPieces];
+    //[self resetPlayingPieces];
 }
 
 -(void)placePlayingPieces
@@ -81,20 +82,21 @@
     
     for (id key in self.playingPieces){
         
-        UIImageView *imageView = [self.playingPieces objectForKey:key];
-        imageView.transform = CGAffineTransformIdentity;
+        PlayingPieceView *playingPieceView = [self.playingPieces objectForKey:key];
+        playingPieceView.transform = CGAffineTransformIdentity;
+        playingPieceView.isFlipped = NO;
         // If there isn't enough space at the end of the row, start a new row
-        if (rowSpaceRemaining < imageView.frame.size.width + kEdgePaddingForPlayingPieces){
+        if (rowSpaceRemaining < playingPieceView.frame.size.width + kEdgePaddingForPlayingPieces){
             rowSpaceRemaining = self.view.bounds.size.width - kEdgePaddingForPlayingPieces;
             currentOrigin.y += kPlayingPieceRowHeight;
             currentOrigin.x = kEdgePaddingForPlayingPieces;
         }
         
-        CGPoint convertedOrigin = [imageView.superview convertPoint:imageView.frame.origin toView:self.view];
-        imageView.frame = CGRectMake(convertedOrigin.x, convertedOrigin.y, imageView.frame.size.width, imageView.frame.size.height);
-        [self.view addSubview:imageView];
-        imageView.frame = CGRectMake(currentOrigin.x, currentOrigin.y, imageView.frame.size.width, imageView.frame.size.height);
-        rowSpaceRemaining -= imageView.frame.size.width + kPaddingBetweenPlayingPieces;
+        CGPoint convertedOrigin = [playingPieceView.superview convertPoint:playingPieceView.frame.origin toView:self.view];
+        playingPieceView.frame = CGRectMake(convertedOrigin.x, convertedOrigin.y, playingPieceView.frame.size.width, playingPieceView.frame.size.height);
+        [self.view addSubview:playingPieceView];
+        playingPieceView.frame = CGRectMake(currentOrigin.x, currentOrigin.y, playingPieceView.frame.size.width, playingPieceView.frame.size.height);
+        rowSpaceRemaining -= playingPieceView.frame.size.width + kPaddingBetweenPlayingPieces;
         currentOrigin.x = self.view.bounds.size.width - rowSpaceRemaining;
     }
 }
@@ -199,10 +201,15 @@
 #pragma mark - GestureRecognizers
 -(void)pieceSingleTapped:(UITapGestureRecognizer*)recognizer
 {
-    UIView *singleTappedPiece = recognizer.view;
+    PlayingPieceView *singleTappedPiece = (PlayingPieceView*)recognizer.view;
     
     void (^animate)() = ^{
-        singleTappedPiece.transform = CGAffineTransformRotate(singleTappedPiece.transform, M_PI_2);
+        if (singleTappedPiece.isFlipped){
+            singleTappedPiece.transform = CGAffineTransformRotate(singleTappedPiece.transform, -M_PI_2);
+        }
+        else{
+            singleTappedPiece.transform = CGAffineTransformRotate(singleTappedPiece.transform, M_PI_2);
+        }
     };
     
     [UIView animateWithDuration:kStandardAnimationDuration animations:animate];
@@ -210,11 +217,13 @@
 
 -(void)pieceDoubleTapped:(UITapGestureRecognizer*)recognizer
 {
-    UIView *doubleTappedPiece = recognizer.view;
+    PlayingPieceView *doubleTappedPiece = (PlayingPieceView*)recognizer.view;
     
     void (^animate)() = ^{
         doubleTappedPiece.transform = CGAffineTransformScale(doubleTappedPiece.transform, -1.0, 1.0);
     };
+    
+    doubleTappedPiece.isFlipped = !doubleTappedPiece.isFlipped;
     
     [UIView animateWithDuration:kStandardAnimationDuration animations:animate];
 }
