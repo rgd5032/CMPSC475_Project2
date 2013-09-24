@@ -24,7 +24,7 @@
 - (IBAction)boardButtonClicked:(id)sender;
 - (IBAction)solveButtonClicked:(id)sender;
 - (IBAction)resetButtonClicked:(id)sender;
-@property (weak, nonatomic) IBOutlet UIImageView *boardView;
+@property (retain, nonatomic) IBOutlet UIImageView *boardView;
 @property BOOL puzzleSolved;
 @property NSMutableDictionary *playingPieces;
 
@@ -49,7 +49,15 @@
         imageView.userInteractionEnabled = YES;
         [self addPlayingPieceGestures:imageView];
         [self.playingPieces setObject:imageView forKey:key];
+        [imageView release];
     }
+}
+
+-(void)dealloc
+{
+    [_model dealloc];
+    [_playingPieces dealloc];
+    [super dealloc];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -106,14 +114,17 @@
     UITapGestureRecognizer *doubleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pieceDoubleTapped:)];
     doubleTapGesture.numberOfTapsRequired = 2;
     [imageView addGestureRecognizer:doubleTapGesture];
+    [doubleTapGesture release];
     
     UITapGestureRecognizer *singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pieceSingleTapped:)];
     singleTapGesture.numberOfTapsRequired = 1;
     [singleTapGesture requireGestureRecognizerToFail:doubleTapGesture];
     [imageView addGestureRecognizer:singleTapGesture];
+    [singleTapGesture release];
     
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(piecePanRecognized:)];
     [imageView addGestureRecognizer:panGesture];
+    [panGesture release];
 }
 
 -(void) resetPlayingPieces

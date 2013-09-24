@@ -19,11 +19,18 @@
 {
     self = [super init];
     if (self) {
-        _solutions = [self createSolutions];
-        _boardImages = [self createBoardImages];
+        _solutions = [[self createSolutions] retain];
+        _boardImages = [[self createBoardImages] retain];
         _currentBoardNumber = 0;
     }
     return self;
+}
+
+-(void)dealloc
+{
+    [_solutions dealloc];
+    [_boardImages dealloc];
+    [super dealloc];
 }
 
 -(NSDictionary*)createPlayingPieceImages
@@ -37,7 +44,7 @@
         [pieces setObject:image forKey:name];
     }
     
-    return pieces;
+    return [pieces autorelease];
 }
 
 -(NSArray*)createBoardImages
@@ -51,7 +58,7 @@
                             [UIImage imageNamed:@"Board5.png"],
                             nil];
     
-    return boardImages;
+    return [boardImages autorelease];
 }
 
 -(NSArray*)createSolutions {
@@ -64,7 +71,7 @@
 -(NSDictionary*)getSolution:(NSInteger)boardNumber
 {
     NSDictionary *solution = [[NSDictionary alloc] initWithDictionary:self.solutions[boardNumber-1]];
-    return solution;
+    return [solution autorelease];
 }
 
 -(UIImage*)getBoardImage:(NSInteger)boardNumber
