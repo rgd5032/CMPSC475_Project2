@@ -44,37 +44,6 @@
 	// Do any additional setup after loading the view, typically from a nib.
     _model = [[Model alloc]init];
     _playingPieces = [[NSMutableDictionary alloc] init];
-    
-    UIColor *moss =[UIColor colorWithRed:0/255.0 green:128/255.0 blue:64/255.0 alpha:1];
-    UIColor *honeydew = [UIColor colorWithRed:204/255.00 green:255/255.0 blue:102/255.0 alpha:1];
-    UIFont *verdana_regular = [UIFont fontWithName:@"Verdana" size:28.0];
-    
-    UIColor *aluminum = [UIColor colorWithRed:153/255.0 green:153/255.00 blue:153/255.00 alpha:1];
-    UIColor *ice = [UIColor colorWithRed:102/255.00 green:255/255.00 blue:255/255.00 alpha:1];
-    UIFont *futura_condensedExtraBold =[UIFont fontWithName:@"Futura-CondensedExtraBold" size:28.0];
-    
-    UIColor *midnight = [UIColor colorWithRed:0/255.00 green:0/255.00 blue:128/255.00 alpha:1];
-    UIColor *snow = [UIColor colorWithRed:255/255.00 green:255/255.00 blue:255/255.00 alpha:1];
-    UIFont *optima_extraBlack = [UIFont fontWithName:@"Optima-ExtraBlack" size:28.0];
-    
-    _themes = [[NSArray alloc] initWithObjects: [[[NSDictionary alloc]initWithObjectsAndKeys:
-                                                 moss,                      @"Background",
-                                                 honeydew,                  @"Text",
-                                                 verdana_regular,           @"Font",
-                                                 nil] autorelease],
-               
-                                                [[[NSDictionary alloc]initWithObjectsAndKeys:
-                                                 aluminum,                  @"Background",
-                                                 ice,                       @"Text",
-                                                 futura_condensedExtraBold, @"Font",
-                                                 nil] autorelease],
-               
-                                                [[[NSDictionary alloc]initWithObjectsAndKeys:
-                                                 midnight,                  @"Background",
-                                                 snow,                      @"Text",
-                                                 optima_extraBlack,         @"Font",
-                                                 nil] autorelease],
-                                                nil];
     self.currentTheme = 0;
     
     NSDictionary *pieces = [[self.model createPlayingPieceImages] retain];
@@ -135,6 +104,7 @@
         PlayingPieceView *playingPieceView = [self.playingPieces objectForKey:key];
         playingPieceView.transform = CGAffineTransformIdentity;
         playingPieceView.isFlipped = NO;
+        playingPieceView.rotations = 0;
         // If there isn't enough space at the end of the row, start a new row
         if (rowSpaceRemaining < playingPieceView.frame.size.width + kEdgePaddingForPlayingPieces){
             rowSpaceRemaining = self.view.bounds.size.width - kEdgePaddingForPlayingPieces;
@@ -203,18 +173,21 @@
         NSDictionary *currentPieceSolution = [currentSolution objectForKey:key];
         NSNumber *originX = [currentPieceSolution objectForKey:@"x"];
         NSNumber *originY = [currentPieceSolution objectForKey:@"y"];
-        NSNumber *rotations = [currentPieceSolution objectForKey:@"rotations"];
+        __block NSNumber *rotations = [currentPieceSolution objectForKey:@"rotations"];
         NSNumber *flips = [currentPieceSolution objectForKey:@"flips"];
         
-        UIImageView *imageView = [self.playingPieces objectForKey:key];
+        PlayingPieceView *imageView = [self.playingPieces objectForKey:key];
         
         void (^animate)() = ^{
             CGPoint convertedOrigin = [imageView.superview convertPoint:imageView.frame.origin toView:self.boardView];
             imageView.frame = CGRectMake(convertedOrigin.x, convertedOrigin.y, imageView.frame.size.width, imageView.frame.size.height);
             [self.boardView addSubview:imageView];
-            imageView.transform = CGAffineTransformIdentity;
-            imageView.transform = CGAffineTransformRotate(imageView.transform, M_PI_2*[rotations floatValue]);
-            if([flips integerValue]){
+            rotations = [NSNumber numberWithInteger:[rotations integerValue]-imageView.rotations];
+            if(imageView.isFlipped){
+                rotations = [NSNumber numberWithInteger:0-[rotations integerValue]];
+            }
+            imageView.transform = CGAffineTransformRotate(imageView.transform, M_PI_2*([rotations floatValue]));
+            if(([flips integerValue] == 1 && !imageView.isFlipped) || ([flips integerValue] == 0 && imageView.isFlipped)){
                 imageView.transform = CGAffineTransformScale(imageView.transform, -1.0, 1.0);
             }
             imageView.frame = CGRectMake(kBoardBlockDimension*[originX floatValue], kBoardBlockDimension*[originY floatValue], imageView.frame.size.width, imageView.frame.size.height);
@@ -237,15 +210,15 @@
     [self dismissViewControllerAnimated:YES completion:NULL];
     self.currentTheme = currentTheme;
     
-    UIColor *backgroundColor = [self.themes[self.currentTheme] objectForKey:@"Background"];
-    UIColor *textColor = [self.themes[self.currentTheme] objectForKey:@"Text"];
-    UIFont *font = [self.themes[self.currentTheme] objectForKey:@"Font"];
+    UIColor *backgroundColor = [self.model getBackgroundColorForTheme:self.currentTheme];
+    UIColor *textColor = [self.model getTextColorForTheme:self.currentTheme];
+    UIFont *font = [self.model getFontForTheme:self.currentTheme];
     
     self.view.backgroundColor = backgroundColor;
     self.resetButton.titleLabel.font = font;
-    self.resetButton.titleLabel.textColor = textColor;
+    [self.resetButton setTitleColor:textColor forState:UIControlStateNormal];
     self.solveButton.titleLabel.font = font;
-    self.solveButton.titleLabel.textColor = textColor;
+    [self.solveButton setTitleColor:textColor forState:UIControlStateNormal];
 }
 
 #pragma mark - Segues
@@ -270,6 +243,11 @@
             singleTappedPiece.transform = CGAffineTransformRotate(singleTappedPiece.transform, M_PI_2);
         }
     };
+    
+    singleTappedPiece.rotations++;
+    if (singleTappedPiece.rotations == 4){
+        singleTappedPiece.rotations = 0;
+    }
     
     [UIView animateWithDuration:kStandardAnimationDuration animations:animate];
 }

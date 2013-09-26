@@ -9,8 +9,9 @@
 #import "Model.h"
 
 @interface Model ()
-@property (strong, nonatomic) NSArray *boardImages;
-@property (strong, nonatomic) NSArray *solutions;
+@property (retain, nonatomic) NSArray *boardImages;
+@property (retain, nonatomic) NSArray *solutions;
+@property (retain, nonatomic) NSArray *themes;
 @end
 
 @implementation Model
@@ -19,8 +20,9 @@
 {
     self = [super init];
     if (self) {
-        _solutions = [[self createSolutions] retain];
-        _boardImages = [[self createBoardImages] retain];
+        _solutions = [[self allSolutions] retain];
+        _boardImages = [[self allBoardImages] retain];
+        _themes = [[self allThemes] retain];
         _currentBoardNumber = 0;
     }
     return self;
@@ -28,8 +30,9 @@
 
 -(void)dealloc
 {
-    [_solutions dealloc];
-    [_boardImages dealloc];
+    [_solutions release];
+    [_boardImages release];
+    [_themes release];
     [super dealloc];
 }
 
@@ -47,7 +50,7 @@
     return [pieces autorelease];
 }
 
--(NSArray*)createBoardImages
+-(NSArray*)allBoardImages
 {
     NSArray *boardImages = [[NSArray alloc] initWithObjects:
                             [UIImage imageNamed:@"Board0.png"],
@@ -61,7 +64,41 @@
     return [boardImages autorelease];
 }
 
--(NSArray*)createSolutions {
+-(NSArray*)allThemes
+{
+    UIColor *moss =[UIColor colorWithRed:0/255.0 green:128/255.0 blue:64/255.0 alpha:1];
+    UIColor *honeydew = [UIColor colorWithRed:204/255.00 green:255/255.0 blue:102/255.0 alpha:1];
+    UIFont *verdana_regular = [UIFont fontWithName:@"Verdana" size:28.0];
+    NSDictionary *classicTheme = [[[NSDictionary alloc]initWithObjectsAndKeys:
+                                   moss,             @"Background",
+                                   honeydew,         @"Text",
+                                   verdana_regular,  @"Font",
+                                   nil] autorelease];
+    
+    UIColor *aluminum = [UIColor colorWithRed:153/255.0 green:153/255.00 blue:153/255.00 alpha:1];
+    UIColor *ice = [UIColor colorWithRed:102/255.00 green:255/255.00 blue:255/255.00 alpha:1];
+    UIFont *futura_condensedExtraBold =[UIFont fontWithName:@"Futura-CondensedExtraBold" size:28.0];
+    NSDictionary *metalTheme = [[[NSDictionary alloc]initWithObjectsAndKeys:
+                                 aluminum,                  @"Background",
+                                 ice,                       @"Text",
+                                 futura_condensedExtraBold, @"Font",
+                                 nil] autorelease];
+    
+    UIColor *midnight = [UIColor colorWithRed:0/255.00 green:0/255.00 blue:128/255.00 alpha:1];
+    UIColor *snow = [UIColor colorWithRed:255/255.00 green:255/255.00 blue:255/255.00 alpha:1];
+    UIFont *optima_extraBlack = [UIFont fontWithName:@"Optima-ExtraBlack" size:28.0];
+    NSDictionary *nittanyLionTheme = [[[NSDictionary alloc]initWithObjectsAndKeys:
+                                       midnight,          @"Background",
+                                       snow,              @"Text",
+                                       optima_extraBlack, @"Font",
+                                       nil] autorelease];
+    
+    NSArray *themes = [[NSArray alloc] initWithObjects: classicTheme, metalTheme, nittanyLionTheme, nil];
+
+    return [themes autorelease];
+}
+
+-(NSArray*)allSolutions {
     NSBundle *mainBundle = [NSBundle mainBundle];
     NSString *path = [mainBundle pathForResource:@"Solutions" ofType:@"plist"];
     NSArray *solutions = [NSArray arrayWithContentsOfFile:path];
@@ -77,5 +114,23 @@
 -(UIImage*)getBoardImage:(NSInteger)boardNumber
 {
     return self.boardImages[boardNumber];
+}
+
+-(UIColor*)getBackgroundColorForTheme:(NSInteger)themeNumber
+{
+    UIColor *color = [self.themes[themeNumber] objectForKey:@"Background"];
+    return color;
+}
+
+-(UIColor*)getTextColorForTheme:(NSInteger)themeNumber
+{
+    UIColor *color = [self.themes[themeNumber] objectForKey:@"Text"];
+    return color;
+}
+
+-(UIFont*)getFontForTheme:(NSInteger)themeNumber
+{
+    UIFont *font = [self.themes[themeNumber] objectForKey:@"Font"];
+    return font;
 }
 @end

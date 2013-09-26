@@ -11,7 +11,9 @@
 @interface Model : NSObject
 @property NSInteger currentBoardNumber;
 -(NSDictionary*)createPlayingPieceImages;
--(NSArray*)createBoardImages;
 -(UIImage*)getBoardImage:(NSInteger)boardNumber;
 -(NSDictionary*)getSolution:(NSInteger)boardNumber;
+-(UIColor*)getBackgroundColorForTheme:(NSInteger)themeNumber;
+-(UIColor*)getTextColorForTheme:(NSInteger)themeNumber;
+-(UIFont*)getFontForTheme:(NSInteger)themeNumber;
 @end

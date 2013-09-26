@@ -10,5 +10,6 @@
 
 @interface PlayingPieceView : UIImageView
 @property BOOL isFlipped;
+@property NSInteger rotations;
 
 @end

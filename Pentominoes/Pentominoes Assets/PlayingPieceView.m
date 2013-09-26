@@ -16,6 +16,7 @@
     if (self) {
         // Initialization code
         self.isFlipped = NO;
+        self.rotations = 0;
     }
     return self;
 }
