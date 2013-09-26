@@ -20,15 +20,19 @@
 #define kPiecePanMagnification 1.5
 #define kPanAnimationDuration 0.2
 
-@interface ViewController ()
+@interface ViewController () <InfoDelegate>
+
 - (IBAction)boardButtonClicked:(id)sender;
 - (IBAction)solveButtonClicked:(id)sender;
 - (IBAction)resetButtonClicked:(id)sender;
+@property (retain, nonatomic) IBOutlet UIButton *resetButton;
+@property (retain, nonatomic) IBOutlet UIButton *solveButton;
 @property (retain, nonatomic) IBOutlet UIImageView *boardView;
+@property (retain, nonatomic) NSMutableDictionary *playingPieces;
+@property (retain, nonatomic) Model *model;
+@property (retain, nonatomic) NSArray *themes;
 @property BOOL puzzleSolved;
-@property NSMutableDictionary *playingPieces;
-
-@property Model *model;
+@property NSInteger currentTheme;
 
 @end
 
@@ -41,7 +45,39 @@
     _model = [[Model alloc]init];
     _playingPieces = [[NSMutableDictionary alloc] init];
     
-    NSDictionary *pieces = [self.model createPlayingPieceImages];
+    UIColor *moss =[UIColor colorWithRed:0/255.0 green:128/255.0 blue:64/255.0 alpha:1];
+    UIColor *honeydew = [UIColor colorWithRed:204/255.00 green:255/255.0 blue:102/255.0 alpha:1];
+    UIFont *verdana_regular = [UIFont fontWithName:@"Verdana" size:28.0];
+    
+    UIColor *aluminum = [UIColor colorWithRed:153/255.0 green:153/255.00 blue:153/255.00 alpha:1];
+    UIColor *ice = [UIColor colorWithRed:102/255.00 green:255/255.00 blue:255/255.00 alpha:1];
+    UIFont *futura_condensedExtraBold =[UIFont fontWithName:@"Futura-CondensedExtraBold" size:28.0];
+    
+    UIColor *midnight = [UIColor colorWithRed:0/255.00 green:0/255.00 blue:128/255.00 alpha:1];
+    UIColor *snow = [UIColor colorWithRed:255/255.00 green:255/255.00 blue:255/255.00 alpha:1];
+    UIFont *optima_extraBlack = [UIFont fontWithName:@"Optima-ExtraBlack" size:28.0];
+    
+    _themes = [[NSArray alloc] initWithObjects: [[[NSDictionary alloc]initWithObjectsAndKeys:
+                                                 moss,                      @"Background",
+                                                 honeydew,                  @"Text",
+                                                 verdana_regular,           @"Font",
+                                                 nil] autorelease],
+               
+                                                [[[NSDictionary alloc]initWithObjectsAndKeys:
+                                                 aluminum,                  @"Background",
+                                                 ice,                       @"Text",
+                                                 futura_condensedExtraBold, @"Font",
+                                                 nil] autorelease],
+               
+                                                [[[NSDictionary alloc]initWithObjectsAndKeys:
+                                                 midnight,                  @"Background",
+                                                 snow,                      @"Text",
+                                                 optima_extraBlack,         @"Font",
+                                                 nil] autorelease],
+                                                nil];
+    self.currentTheme = 0;
+    
+    NSDictionary *pieces = [[self.model createPlayingPieceImages] retain];
     for (id key in pieces){
         UIImage *image = [pieces objectForKey:key];
         PlayingPieceView *imageView = [[PlayingPieceView alloc] initWithImage:image];
@@ -51,12 +87,18 @@
         [self.playingPieces setObject:imageView forKey:key];
         [imageView release];
     }
+    
+    [pieces release];
 }
 
 -(void)dealloc
 {
-    [_model dealloc];
-    [_playingPieces dealloc];
+    [_model release];
+    [_playingPieces release];
+    [_boardView release];
+    [_themes release];
+    [_resetButton release];
+    [_solveButton release];
     [super dealloc];
 }
 
@@ -77,7 +119,7 @@
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-    //[self resetPlayingPieces];
+    [self resetPlayingPieces];
 }
 
 -(void)placePlayingPieces
@@ -191,22 +233,28 @@
 }
 
 #pragma mark - Info Delegate
--(void)dismissMe {
+-(void)dismissMe:(NSInteger)currentTheme {
     [self dismissViewControllerAnimated:YES completion:NULL];
+    self.currentTheme = currentTheme;
+    
+    UIColor *backgroundColor = [self.themes[self.currentTheme] objectForKey:@"Background"];
+    UIColor *textColor = [self.themes[self.currentTheme] objectForKey:@"Text"];
+    UIFont *font = [self.themes[self.currentTheme] objectForKey:@"Font"];
+    
+    self.view.backgroundColor = backgroundColor;
+    self.resetButton.titleLabel.font = font;
+    self.resetButton.titleLabel.textColor = textColor;
+    self.solveButton.titleLabel.font = font;
+    self.solveButton.titleLabel.textColor = textColor;
 }
 
 #pragma mark - Segues
-/*
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"InfoSegue"]) {
         InfoViewController *infoViewController = segue.destinationViewController;
+        infoViewController.currentTheme = self.currentTheme;
         infoViewController.delegate = self;
     }
-    
-}
-*/
--(IBAction)unwindSegue:(UIStoryboardSegue*)segue {
-    
 }
 
 #pragma mark - GestureRecognizers

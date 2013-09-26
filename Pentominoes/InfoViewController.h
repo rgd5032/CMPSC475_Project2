@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 @protocol InfoDelegate <NSObject>
 
--(void)dismissMe;
+-(void)dismissMe:(NSInteger)currentTheme;
 
 @end
 
 @interface InfoViewController : UIViewController
 @property (nonatomic,retain) id<InfoDelegate> delegate;
+@property NSInteger currentTheme;
 
 @end
